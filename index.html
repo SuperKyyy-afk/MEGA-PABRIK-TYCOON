@@ -1,0 +1,1546 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no">
+<title>🏭 Mega Pabrik Tycoon</title>
+
+  <!-- ===== PWA META TAGS ===== -->
+  <meta name="application-name" content="Pabrik Tycoon">
+  <meta name="description" content="Game tycoon pabrik industri terbaik! Bangun kerajaan industri dari nol.">
+  <meta name="keywords" content="game, tycoon, pabrik, industri, idle game, indonesia">
+  <meta name="author" content="Pabrik Tycoon Studio">
+  <meta name="robots" content="noindex">
+
+  <!-- PWA Manifest -->
+  <link rel="manifest" href="manifest.json">
+
+  <!-- Theme Colors -->
+  <meta name="theme-color" content="#ffaa00">
+  <meta name="background-color" content="#050a18">
+  <meta name="mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+  <meta name="apple-mobile-web-app-title" content="Pabrik Tycoon">
+
+  <!-- App Icons -->
+  <link rel="icon" type="image/png" sizes="32x32" href="icons/icon-96x96.png">
+  <link rel="icon" type="image/png" sizes="192x192" href="icons/icon-192x192.png">
+  <link rel="apple-touch-icon" sizes="152x152" href="icons/icon-152x152.png">
+  <link rel="apple-touch-icon" sizes="192x192" href="icons/icon-192x192.png">
+
+  <!-- iOS Splash Screens -->
+  <meta name="apple-mobile-web-app-status-bar-style" content="black">
+
+  <!-- Open Graph -->
+  <meta property="og:title" content="Mega Pabrik Tycoon">
+  <meta property="og:description" content="Bangun kerajaan industri dari nol! Game tycoon terbaik.">
+  <meta property="og:type" content="website">
+  <meta property="og:image" content="icons/icon-512x512.png">
+<link href="https://fonts.googleapis.com/css2?family=Russo+One&family=Exo+2:wght@300;400;600;700;800&display=swap" rel="stylesheet">
+<style>
+:root{
+  --amber:#ffaa00;--amber2:#ff7700;--steel:#7ab8d4;--green:#44ff88;--red:#ff4455;
+  --purple:#cc88ff;--panel:#0a0f1a;--panel2:#0d1420;--border:rgba(255,170,0,0.2);
+  --text:#e8dfc8;--muted:#5a6a7a;--font-t:'Russo One',sans-serif;--font-b:'Exo 2',sans-serif;
+}
+*{box-sizing:border-box;margin:0;padding:0;-webkit-tap-highlight-color:transparent;}
+html,body{height:100%;overflow:hidden;max-width:480px;margin:0 auto;}
+body{display:flex;flex-direction:column;background:#000;font-family:var(--font-b);}
+
+/* HEADER */
+.hdr{background:rgba(5,10,20,0.97);border-bottom:1.5px solid var(--border);padding:8px 12px;
+  display:flex;justify-content:space-between;align-items:center;position:relative;z-index:300;
+  box-shadow:0 2px 20px rgba(0,0,0,0.8);}
+.hdr-left{display:flex;flex-direction:column;}
+.hdr-title{font-family:var(--font-t);font-size:18px;color:var(--amber);letter-spacing:1px;
+  text-shadow:0 0 20px rgba(255,170,0,0.5);}
+.hdr-title em{color:#fff;font-style:normal;}
+.hdr-sub{font-size:9px;color:var(--muted);letter-spacing:3px;margin-top:1px;}
+.hdr-right{display:flex;align-items:center;gap:8px;}
+.hdr-money{font-family:var(--font-t);font-size:22px;color:#ffd700;
+  text-shadow:0 0 15px rgba(255,215,0,0.6);}
+.hdr-btn{width:32px;height:32px;border-radius:8px;border:1.5px solid rgba(255,255,255,0.1);
+  background:rgba(255,255,255,0.05);cursor:pointer;font-size:16px;display:flex;
+  align-items:center;justify-content:center;transition:all 0.2s;}
+.hdr-btn:active{background:rgba(255,255,255,0.15);}
+.hdr-btn.active{border-color:var(--green);background:rgba(68,255,136,0.1);}
+
+/* STATS */
+.stats{display:flex;background:rgba(5,8,15,0.98);border-bottom:1px solid rgba(255,255,255,0.04);}
+.sitem{flex:1;text-align:center;padding:5px 4px;border-right:1px solid rgba(255,255,255,0.04);}
+.sitem:last-child{border-right:none;}
+.slbl{font-size:7px;letter-spacing:2px;color:var(--muted);text-transform:uppercase;}
+.sval{font-family:var(--font-t);font-size:14px;margin-top:1px;}
+.sval.p{color:var(--amber2);}.sval.r{color:var(--green);}.sval.t{color:var(--steel);}
+.sval.w{color:#aaddff;}
+
+/* SCENE */
+.scene{position:relative;overflow:hidden;flex-shrink:0;height:200px;cursor:pointer;}
+#sky{position:absolute;inset:0;transition:background 3s ease;}
+#stars{position:absolute;inset:0;opacity:0;transition:opacity 2s;}
+.star{position:absolute;border-radius:50%;background:#fff;animation:twinkle var(--d,2s) ease-in-out infinite;}
+@keyframes twinkle{0%,100%{opacity:0.3}50%{opacity:1}}
+#sun-moon{position:absolute;width:32px;height:32px;border-radius:50%;transition:background 3s;}
+.cloud{position:absolute;opacity:0;transition:opacity 2s;}
+.cloud-body{background:rgba(255,255,255,0.85);border-radius:50px;
+  box-shadow:0 0 0 10px rgba(255,255,255,0.6),0 0 0 20px rgba(255,255,255,0.3);}
+
+/* GROUND */
+#ground{position:absolute;bottom:0;left:0;right:0;height:48px;
+  background:linear-gradient(180deg,#1e3010 0%,#0f1a08 100%);
+  border-top:2px solid #2a3d14;}
+#road{position:absolute;bottom:0;left:0;right:0;height:14px;background:#111108;
+  border-top:1px solid #222210;}
+
+/* TREES */
+.tree-group{position:absolute;bottom:14px;display:flex;gap:2px;align-items:flex-end;}
+.tree-group.left{left:4px;}.tree-group.right{right:4px;}
+.tree{display:flex;flex-direction:column;align-items:center;transform-origin:bottom center;
+  animation:windSway var(--ws,4s) ease-in-out infinite;animation-delay:var(--wd,0s);}
+@keyframes windSway{0%,100%{transform:rotate(-1deg)}50%{transform:rotate(1.5deg)}}
+.tree-trunk{background:linear-gradient(180deg,#6b3d1a,#3d1f08);border-radius:2px;}
+.tree-top{border-radius:50% 50% 40% 40%;position:relative;}
+.tree-top::after{content:'';position:absolute;bottom:-4px;left:50%;transform:translateX(-50%);
+  width:80%;height:60%;background:inherit;filter:brightness(0.8);border-radius:40% 40% 50% 50%;}
+.snow-tree .tree-top::before{content:'';position:absolute;inset:0;
+  background:rgba(255,255,255,0.4);border-radius:inherit;pointer-events:none;}
+
+/* FACTORY */
+.factory-scene-wrap{position:absolute;bottom:14px;left:0;right:0;
+  display:flex;align-items:flex-end;justify-content:center;gap:0;}
+.bld{border:1.5px solid;border-bottom:none;position:relative;transition:height 0.8s ease,width 0.5s ease;}
+.bld-main{background:linear-gradient(180deg,#2a3545,#1a2232);border-color:#3a4a5a;width:150px;}
+.bld-side-l{background:linear-gradient(180deg,#212d3a,#151f2c);border-color:#2a3a4a;
+  width:55px;border-right:none;display:none;}
+.bld-side-r{background:linear-gradient(180deg,#212d3a,#151f2c);border-color:#2a3a4a;
+  width:55px;border-left:none;display:none;}
+.bld-far{background:linear-gradient(180deg,#1a2230,#10182a);border-color:#222f3f;
+  width:35px;border-right:none;display:none;}
+.bld-windows{display:grid;gap:3px;padding:8px 6px;}
+.win{height:12px;background:#111a12;border-radius:1px;transition:background 0.5s,box-shadow 0.5s;}
+.win.lit{background:rgba(255,200,50,0.75);box-shadow:0 0 5px rgba(255,200,50,0.5);}
+.win.lit2{background:rgba(100,180,255,0.6);box-shadow:0 0 5px rgba(100,180,255,0.4);}
+.win.blink{animation:winBlink 0.8s ease-in-out infinite;}
+@keyframes winBlink{0%,100%{opacity:1}50%{opacity:0.3}}
+.factory-sign{text-align:center;padding:3px;font-family:var(--font-t);font-size:9px;
+  color:rgba(255,170,0,0.5);letter-spacing:2px;}
+.stacks{position:absolute;top:0;left:0;right:0;transform:translateY(-100%);
+  display:flex;justify-content:space-evenly;padding:0 20px;}
+.stack{width:12px;background:linear-gradient(180deg,#404040,#282828);
+  border:1px solid #555;border-bottom:none;border-radius:2px 2px 0 0;
+  position:relative;display:none;}
+.stack.on{display:block;}
+.stack-top{position:absolute;top:-5px;left:-3px;width:18px;height:8px;
+  background:#333;border-radius:3px;border:1px solid #444;}
+.smoke{position:absolute;border-radius:50%;background:rgba(160,160,160,0.2);
+  animation:smokeUp var(--sd,3s) ease-out infinite;animation-delay:var(--sdd,0s);}
+@keyframes smokeUp{0%{transform:translateY(0) scale(0.5);opacity:0.5}
+  60%{transform:translateY(-50px) translateX(6px) scale(2);opacity:0.2}
+  100%{transform:translateY(-100px) translateX(-4px) scale(3);opacity:0}}
+
+/* CONVEYOR */
+#conveyor{position:absolute;bottom:14px;left:0;right:0;height:14px;display:none;}
+#conveyor.on{display:block;}
+.conv-track{height:8px;position:absolute;left:0;right:0;top:3px;
+  background:repeating-linear-gradient(90deg,#3a3020 0,#3a3020 20px,#252015 20px,#252015 22px);
+  border-top:2px solid #5a4a30;border-bottom:2px solid #1a1008;
+  animation:ctMove 0.4s linear infinite;}
+@keyframes ctMove{from{background-position:0}to{background-position:22px 0}}
+.conv-products{position:absolute;top:-6px;left:0;right:0;height:16px;overflow:hidden;}
+.cbox{position:absolute;width:12px;height:10px;
+  background:linear-gradient(135deg,#ff8800,#cc5500);border:1px solid #ff9900;
+  border-radius:1px;top:3px;animation:cboxMove var(--cd,2s) linear infinite;
+  animation-delay:var(--cdd,0s);}
+@keyframes cboxMove{from{left:105%}to{left:-15px}}
+
+/* FACTORY GLOW */
+.fglow{position:absolute;bottom:14px;left:50%;transform:translateX(-50%);
+  height:3px;background:linear-gradient(90deg,transparent,rgba(255,150,0,0.4),transparent);
+  animation:glowPulse 2s ease-in-out infinite;border-radius:2px;}
+@keyframes glowPulse{0%,100%{opacity:0.3;box-shadow:none}
+  50%{opacity:1;box-shadow:0 0 15px rgba(255,150,0,0.3)}}
+.chimney-spark{position:absolute;width:3px;height:3px;border-radius:50%;
+  background:var(--amber);animation:sparkFly 1s ease-out forwards;pointer-events:none;}
+@keyframes sparkFly{0%{transform:translate(0,0);opacity:1}
+  100%{transform:translate(var(--sx,10px),var(--sy,-30px));opacity:0}}
+
+/* WEATHER CANVAS */
+#wx-canvas{position:absolute;inset:0;pointer-events:none;z-index:10;}
+
+/* LIGHTNING FLASH */
+#lightning{position:absolute;inset:0;background:rgba(180,200,255,0.7);
+  opacity:0;pointer-events:none;z-index:11;transition:opacity 0.05s;}
+
+/* FLOAT TEXT */
+.float-txt{position:fixed;pointer-events:none;font-family:var(--font-t);font-size:15px;
+  color:var(--amber);text-shadow:0 0 10px rgba(255,170,0,0.8);
+  animation:floatUp 0.9s ease-out forwards;z-index:500;}
+@keyframes floatUp{0%{opacity:1;transform:translateY(0) scale(1)}
+  100%{opacity:0;transform:translateY(-55px) scale(1.2)}}
+.ripple{position:absolute;border-radius:50%;border:2px solid rgba(255,170,0,0.7);
+  pointer-events:none;z-index:12;animation:rippleOut 0.6s ease-out forwards;}
+@keyframes rippleOut{from{width:10px;height:10px;margin:-5px;opacity:1}
+  to{width:70px;height:70px;margin:-35px;opacity:0}}
+.tap-hint{position:absolute;bottom:60px;left:50%;transform:translateX(-50%);
+  font-family:var(--font-t);font-size:9px;color:rgba(255,170,0,0.6);letter-spacing:3px;
+  pointer-events:none;animation:blink 1.8s ease-in-out infinite;}
+@keyframes blink{0%,100%{opacity:0.3}50%{opacity:0.9}}
+
+/* PANEL */
+.panel{flex:1;display:flex;flex-direction:column;overflow:hidden;background:var(--panel);}
+.tabs{display:flex;background:rgba(5,8,15,0.98);border-bottom:1.5px solid rgba(255,170,0,0.15);}
+.tab{flex:1;padding:8px 4px;text-align:center;cursor:pointer;font-family:var(--font-t);
+  font-size:9px;letter-spacing:1px;color:var(--muted);transition:all 0.2s;
+  border-bottom:2px solid transparent;}
+.tab.active{color:var(--amber);border-bottom-color:var(--amber);background:rgba(255,170,0,0.05);}
+.tab-icon{font-size:16px;display:block;margin-bottom:2px;}
+.tab-content{flex:1;overflow-y:auto;padding:10px 12px 20px;}
+.tab-pane{display:none;}.tab-pane.active{display:block;}
+
+/* SELL ACTIONS */
+.action-row{display:flex;gap:8px;margin-bottom:10px;}
+.action-card{flex:1;background:rgba(12,18,28,0.95);border:1.5px solid rgba(255,255,255,0.07);
+  border-radius:10px;padding:10px;display:flex;flex-direction:column;gap:6px;}
+.ac-title{font-family:var(--font-t);font-size:10px;letter-spacing:1px;text-transform:uppercase;}
+.ac-sub{font-size:9px;color:var(--muted);}
+.ac-btn{border-radius:7px;padding:8px;cursor:pointer;font-family:var(--font-t);font-size:10px;
+  letter-spacing:1px;text-align:center;border:1.5px solid;transition:all 0.15s;}
+.ac-btn:active{transform:scale(0.94);}
+.ac-btn:disabled{border-color:#222;color:#333;background:transparent;cursor:default;}
+.ac-btn.green{background:rgba(68,255,136,0.1);border-color:var(--green);color:var(--green);}
+.ac-btn.green:active{background:rgba(68,255,136,0.25);}
+.ac-btn.steel{background:rgba(122,184,212,0.1);border-color:var(--steel);color:var(--steel);}
+.ac-btn.amber{background:rgba(255,170,0,0.1);border-color:var(--amber);color:var(--amber);}
+
+/* SEC HDR */
+.sec-hdr{display:flex;align-items:center;gap:8px;margin:14px 0 8px;}
+.sec-line{flex:1;height:1px;background:linear-gradient(90deg,rgba(255,170,0,0.3),transparent);}
+.sec-line.r{background:linear-gradient(90deg,transparent,rgba(255,170,0,0.3));}
+.sec-txt{font-family:var(--font-t);font-size:9px;letter-spacing:3px;color:var(--amber);}
+
+/* MACHINE CARDS */
+.mcard{background:rgba(10,15,25,0.95);border:1.5px solid rgba(255,255,255,0.05);
+  border-radius:12px;margin-bottom:8px;overflow:hidden;transition:border-color 0.3s,transform 0.1s;}
+.mcard.buyable{border-color:rgba(255,170,0,0.4);}
+.mcard.locked{opacity:0.45;}
+.mcard-top{display:flex;align-items:center;gap:10px;padding:11px 13px 8px;}
+.mcard-ico{width:44px;height:44px;border-radius:10px;display:flex;align-items:center;
+  justify-content:center;font-size:22px;flex-shrink:0;border:1px solid rgba(255,255,255,0.07);}
+.mcard-info{flex:1;}
+.mcard-name{font-family:var(--font-t);font-size:14px;color:#fff;letter-spacing:0.5px;}
+.mcard-desc{font-size:10px;color:var(--muted);margin-top:2px;}
+.mcard-cnt{font-family:var(--font-t);font-size:28px;color:var(--amber);
+  text-shadow:0 0 15px rgba(255,170,0,0.4);min-width:36px;text-align:right;}
+.mcard-stats{display:flex;border-top:1px solid rgba(255,255,255,0.04);
+  border-bottom:1px solid rgba(255,255,255,0.04);}
+.mcs{flex:1;text-align:center;padding:5px 4px;border-right:1px solid rgba(255,255,255,0.04);}
+.mcs:last-child{border-right:none;}
+.mcs-l{font-size:7px;letter-spacing:1.5px;color:var(--muted);text-transform:uppercase;}
+.mcs-v{font-family:var(--font-t);font-size:12px;margin-top:1px;}
+.mcard-stars{display:flex;gap:3px;padding:5px 13px;}
+.mstar{height:3px;flex:1;border-radius:1px;background:#1a2030;}
+.mstar.on{background:var(--amber);}
+.mcard-prog{height:2px;background:rgba(255,255,255,0.05);}
+.mcard-prog-fill{height:100%;background:linear-gradient(90deg,var(--amber2),var(--amber));
+  transition:width 0.1s linear;box-shadow:0 0 4px rgba(255,170,0,0.4);}
+.mcard-acts{display:flex;gap:6px;padding:8px 11px 11px;}
+.mbtn{flex:1;border-radius:7px;padding:9px 6px;cursor:pointer;font-family:var(--font-t);
+  font-size:10px;letter-spacing:0.5px;text-align:center;border:1.5px solid;transition:all 0.15s;}
+.mbtn:active{transform:scale(0.93);}
+.mbtn:disabled{border-color:#1a1a1a;color:#2a2a2a;background:transparent;cursor:default;}
+.mbtn.buy{background:rgba(255,119,0,0.12);border-color:var(--amber2);color:var(--amber2);}
+.mbtn.buy:not(:disabled):active{background:rgba(255,119,0,0.3);}
+.mbtn.up{background:rgba(122,184,212,0.12);border-color:var(--steel);color:var(--steel);}
+.mbtn.up:not(:disabled):active{background:rgba(122,184,212,0.3);}
+
+/* RESEARCH */
+.rcat{margin-bottom:14px;}
+.rcat-hdr{display:flex;align-items:center;gap:8px;margin-bottom:8px;}
+.rcat-icon{font-size:18px;}
+.rcat-title{font-family:var(--font-t);font-size:12px;letter-spacing:1px;}
+.rcard{background:rgba(10,15,25,0.95);border:1.5px solid rgba(255,255,255,0.05);
+  border-radius:10px;padding:10px 12px;margin-bottom:6px;display:flex;gap:10px;
+  align-items:center;transition:border-color 0.3s;}
+.rcard.done{border-color:rgba(68,255,136,0.3);background:rgba(68,255,136,0.03);}
+.rcard.available{border-color:rgba(255,170,0,0.35);}
+.rcard.locked{opacity:0.4;}
+.rcard-info{flex:1;}
+.rcard-name{font-family:var(--font-t);font-size:12px;color:#fff;letter-spacing:0.5px;}
+.rcard-eff{font-size:9px;color:var(--green);margin-top:2px;}
+.rcard-req{font-size:9px;color:var(--muted);margin-top:1px;}
+.rcard-cost{font-family:var(--font-t);font-size:11px;color:var(--amber);white-space:nowrap;}
+.rbtn{border-radius:6px;padding:7px 12px;cursor:pointer;font-family:var(--font-t);font-size:10px;
+  letter-spacing:1px;border:1.5px solid var(--amber);background:rgba(255,170,0,0.1);
+  color:var(--amber);transition:all 0.15s;white-space:nowrap;}
+.rbtn:active{transform:scale(0.94);background:rgba(255,170,0,0.25);}
+.rbtn.done{border-color:var(--green);background:rgba(68,255,136,0.1);color:var(--green);cursor:default;}
+.rbtn.locked{border-color:#222;color:#333;background:transparent;cursor:default;}
+
+/* STATS */
+.stat-grid{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-top:6px;}
+.stat-box{background:rgba(10,15,25,0.95);border:1.5px solid rgba(255,255,255,0.06);
+  border-radius:10px;padding:10px 12px;}
+.sb-lbl{font-size:9px;letter-spacing:2px;color:var(--muted);text-transform:uppercase;}
+.sb-val{font-family:var(--font-t);font-size:18px;margin-top:4px;}
+
+/* MILESTONE */
+.milestone{position:fixed;top:90px;left:50%;transform:translateX(-50%) translateY(-100px);
+  background:rgba(10,15,25,0.97);border:2px solid var(--amber);border-radius:12px;
+  padding:12px 16px;z-index:400;display:flex;gap:10px;align-items:center;
+  max-width:340px;width:90%;box-shadow:0 0 30px rgba(255,170,0,0.3);
+  transition:transform 0.4s cubic-bezier(0.34,1.56,0.64,1);}
+.milestone.show{transform:translateX(-50%) translateY(0);}
+.ms-emoji{font-size:30px;}
+.ms-title{font-family:var(--font-t);font-size:13px;color:var(--amber);}
+.ms-sub{font-size:10px;color:var(--muted);margin-top:2px;}
+
+/* TOAST */
+.toast{position:fixed;bottom:20px;left:50%;transform:translateX(-50%) translateY(80px);
+  background:rgba(8,12,22,0.97);border:1.5px solid var(--amber2);color:var(--amber2);
+  font-family:var(--font-t);font-size:11px;padding:9px 18px;border-radius:8px;z-index:600;
+  transition:transform 0.3s cubic-bezier(0.34,1.56,0.64,1);pointer-events:none;letter-spacing:1px;
+  box-shadow:0 8px 30px rgba(0,0,0,0.7);}
+.toast.show{transform:translateX(-50%) translateY(0);}
+
+/* WEATHER BADGE */
+.wx-badge{position:absolute;top:8px;right:8px;background:rgba(0,0,0,0.5);
+  border:1px solid rgba(255,255,255,0.1);border-radius:6px;padding:4px 8px;
+  font-size:11px;z-index:20;backdrop-filter:blur(4px);}
+
+/* CLICK PROMPT */
+.click-prompt{position:absolute;bottom:60px;left:50%;transform:translateX(-50%);
+  text-align:center;pointer-events:none;z-index:15;}
+.cp-text{font-family:var(--font-t);font-size:9px;color:rgba(255,170,0,0.6);
+  letter-spacing:3px;animation:blink 2s ease-in-out infinite;}
+
+/* Scrollbar */
+::-webkit-scrollbar{width:3px;}
+::-webkit-scrollbar-track{background:transparent;}
+::-webkit-scrollbar-thumb{background:#1a2535;border-radius:2px;}
+</style>
+</head>
+<body>
+
+<!-- HEADER -->
+<header class="hdr">
+  <div class="hdr-left">
+    <div class="hdr-title">🏭 MEGA <em>TYCOON</em></div>
+    <div class="hdr-sub" id="hdr-day">HARI 1 · SIANG CERAH</div>
+  </div>
+  <div class="hdr-right">
+    <button class="hdr-btn" id="music-btn" onclick="toggleMusic()" title="Musik">🎵</button>
+    <button class="hdr-btn active" id="sfx-btn" onclick="toggleSfx()" title="SFX">🔊</button>
+    <div class="hdr-money" id="money-display">$100</div>
+  </div>
+</header>
+
+<!-- STATS BAR -->
+<div class="stats">
+  <div class="sitem"><div class="slbl">Produk</div><div class="sval p" id="s-prod">0</div></div>
+  <div class="sitem"><div class="slbl">Per Detik</div><div class="sval r" id="s-rate">0/s</div></div>
+  <div class="sitem"><div class="slbl">Total $</div><div class="sval t" id="s-total">$0</div></div>
+  <div class="sitem"><div class="slbl">Cuaca</div><div class="sval w" id="s-weather">☀️ Cerah</div></div>
+</div>
+
+<!-- SCENE -->
+<div class="scene" id="scene" onclick="handleClick(event)">
+  <div id="sky"></div>
+  <div id="stars"></div>
+  <div id="sun-moon"></div>
+  <!-- Clouds -->
+  <div class="cloud" id="cl1" style="top:15%;left:5%">
+    <div class="cloud-body" style="width:60px;height:22px"></div>
+  </div>
+  <div class="cloud" id="cl2" style="top:20%;left:40%">
+    <div class="cloud-body" style="width:80px;height:28px"></div>
+  </div>
+  <div class="cloud" id="cl3" style="top:10%;right:8%">
+    <div class="cloud-body" style="width:55px;height:20px"></div>
+  </div>
+  <div class="cloud" id="cl4" style="top:30%;left:20%">
+    <div class="cloud-body" style="width:70px;height:24px"></div>
+  </div>
+
+  <!-- Ground -->
+  <div id="ground"></div>
+  <div id="road"></div>
+
+  <!-- Trees Left -->
+  <div class="tree-group left" id="trees-left"></div>
+  <!-- Trees Right -->
+  <div class="tree-group right" id="trees-right"></div>
+
+  <!-- Factory -->
+  <div class="factory-scene-wrap">
+    <div class="bld bld-far" id="bld-far" style="height:55px">
+      <div class="bld-windows" style="grid-template-columns:repeat(2,1fr);padding:6px 4px;gap:3px;">
+        <div class="win" id="fw1"></div><div class="win" id="fw2"></div>
+        <div class="win" id="fw3"></div><div class="win" id="fw4"></div>
+      </div>
+    </div>
+    <div class="bld bld-side-l" id="bld-left" style="height:65px">
+      <div class="bld-windows" style="grid-template-columns:repeat(2,1fr);padding:6px 5px;gap:3px;">
+        <div class="win" id="lw1"></div><div class="win" id="lw2"></div>
+        <div class="win" id="lw3"></div><div class="win" id="lw4"></div>
+      </div>
+    </div>
+    <div class="bld bld-main" id="bld-main" style="height:90px">
+      <div class="stacks" id="stacks">
+        <div class="stack" id="st1" style="height:50px">
+          <div class="stack-top"></div>
+          <div class="smoke" style="width:10px;height:10px;left:1px;top:-8px;--sd:2.5s;--sdd:0s"></div>
+          <div class="smoke" style="width:8px;height:8px;left:2px;top:-6px;--sd:3s;--sdd:1.2s"></div>
+        </div>
+        <div class="stack" id="st2" style="height:42px">
+          <div class="stack-top"></div>
+          <div class="smoke" style="width:10px;height:10px;left:1px;top:-8px;--sd:3.2s;--sdd:0.6s"></div>
+        </div>
+        <div class="stack" id="st3" style="height:48px">
+          <div class="stack-top"></div>
+          <div class="smoke" style="width:10px;height:10px;left:1px;top:-8px;--sd:2.8s;--sdd:0.3s"></div>
+          <div class="smoke" style="width:7px;height:7px;left:2px;top:-5px;--sd:3.5s;--sdd:1.5s"></div>
+        </div>
+      </div>
+      <div class="bld-windows" style="grid-template-columns:repeat(4,1fr);">
+        <div class="win" id="w1"></div><div class="win" id="w2"></div>
+        <div class="win" id="w3"></div><div class="win" id="w4"></div>
+        <div class="win" id="w5"></div><div class="win" id="w6"></div>
+        <div class="win" id="w7"></div><div class="win" id="w8"></div>
+      </div>
+      <div class="factory-sign" id="fsign">FACTORY</div>
+    </div>
+    <div class="bld bld-side-r" id="bld-right" style="height:65px">
+      <div class="bld-windows" style="grid-template-columns:repeat(2,1fr);padding:6px 5px;gap:3px;">
+        <div class="win" id="rw1"></div><div class="win" id="rw2"></div>
+        <div class="win" id="rw3"></div><div class="win" id="rw4"></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Conveyor -->
+  <div id="conveyor">
+    <div class="conv-track"></div>
+    <div class="conv-products" id="conv-boxes"></div>
+  </div>
+
+  <div class="fglow" id="fglow" style="width:150px"></div>
+
+  <!-- Weather canvas -->
+  <canvas id="wx-canvas"></canvas>
+  <div id="lightning"></div>
+
+  <!-- Weather badge -->
+  <div class="wx-badge" id="wx-badge">☀️ Cerah</div>
+
+  <div class="click-prompt"><div class="cp-text">TAP PABRIK UNTUK PRODUKSI</div></div>
+</div>
+
+<!-- PANEL -->
+<div class="panel">
+  <div class="tabs">
+    <div class="tab active" onclick="showTab('sell')">
+      <span class="tab-icon">💰</span>JUAL
+    </div>
+    <div class="tab" onclick="showTab('machines')">
+      <span class="tab-icon">⚙️</span>MESIN
+    </div>
+    <div class="tab" onclick="showTab('research')">
+      <span class="tab-icon">🔬</span>RISET
+    </div>
+    <div class="tab" onclick="showTab('stats')">
+      <span class="tab-icon">📊</span>STATS
+    </div>
+  </div>
+
+  <!-- SELL TAB -->
+  <div class="tab-content">
+    <div class="tab-pane active" id="tab-sell">
+      <div class="action-row">
+        <div class="action-card">
+          <div class="ac-title" style="color:var(--green)">📦 Jual Produk</div>
+          <div class="ac-sub">$<span id="sell-price">1</span>/produk · <span id="sell-stock">0</span> stok</div>
+          <button class="ac-btn green" id="sell-btn" onclick="sellAll()">JUAL SEMUA 💰</button>
+        </div>
+        <div class="action-card">
+          <div class="ac-title" style="color:var(--steel)">📈 Harga Jual</div>
+          <div class="ac-sub">Level <span id="price-lv">1</span> · $<span id="price-cost">50</span></div>
+          <button class="ac-btn steel" id="price-btn" onclick="upgradeSellPrice()">⬆ UPGRADE</button>
+        </div>
+      </div>
+      <div class="action-row">
+        <div class="action-card" id="autosell-card" style="display:none">
+          <div class="ac-title" style="color:var(--amber)">🤖 Auto-Jual</div>
+          <div class="ac-sub">Setiap <span id="autosell-interval">30</span>s otomatis</div>
+          <div class="ac-btn amber" style="cursor:default;opacity:0.6">AKTIF ✓</div>
+        </div>
+      </div>
+      <div class="sec-hdr">
+        <div class="sec-line"></div><div class="sec-txt">ℹ INFORMASI</div><div class="sec-line r"></div>
+      </div>
+      <div style="background:rgba(10,15,25,0.8);border:1px solid rgba(255,255,255,0.05);border-radius:10px;padding:12px;">
+        <div style="font-size:11px;color:var(--muted);line-height:1.7;">
+          Klik Power: <span style="color:var(--amber)" id="click-power-info">1/klik</span><br>
+          Bonus Produksi: <span style="color:var(--green)" id="prod-bonus-info">×1.0</span><br>
+          Bonus Harga: <span style="color:var(--steel)" id="price-bonus-info">×1.0</span><br>
+          Passive Income: <span style="color:var(--purple)" id="passive-info">$0/s</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- MACHINES TAB -->
+    <div class="tab-pane" id="tab-machines">
+      <div id="machines-container"></div>
+    </div>
+
+    <!-- RESEARCH TAB -->
+    <div class="tab-pane" id="tab-research">
+      <div id="research-container"></div>
+    </div>
+
+    <!-- STATS TAB -->
+    <div class="tab-pane" id="tab-stats">
+      <div class="stat-grid">
+        <div class="stat-box"><div class="sb-lbl">Total Penghasilan</div><div class="sb-val" style="color:var(--amber)" id="st-earned">$0</div></div>
+        <div class="stat-box"><div class="sb-lbl">Total Produksi</div><div class="sb-val" style="color:var(--green)" id="st-produced">0</div></div>
+        <div class="stat-box"><div class="sb-lbl">Total Mesin</div><div class="sb-val" style="color:var(--steel)" id="st-machines">0</div></div>
+        <div class="stat-box"><div class="sb-lbl">Riset Selesai</div><div class="sb-val" style="color:var(--purple)" id="st-research">0</div></div>
+        <div class="stat-box"><div class="sb-lbl">Total Klik</div><div class="sb-val" style="color:#fff" id="st-clicks">0</div></div>
+        <div class="stat-box"><div class="sb-lbl">Hari Berlalu</div><div class="sb-val" style="color:var(--amber2)" id="st-days">0</div></div>
+      </div>
+      <div class="sec-hdr"><div class="sec-line"></div><div class="sec-txt">🏆 MILESTONE</div><div class="sec-line r"></div></div>
+      <div id="milestone-list" style="font-size:11px;color:var(--muted);line-height:2;"></div>
+    </div>
+  </div>
+</div>
+
+<!-- MILESTONE POPUP -->
+<div class="milestone" id="ms-popup">
+  <div class="ms-emoji" id="ms-emoji">🏆</div>
+  <div>
+    <div class="ms-title" id="ms-title">Achievement!</div>
+    <div class="ms-sub" id="ms-sub">Kerja bagus!</div>
+  </div>
+</div>
+
+<div class="toast" id="toast"></div>
+
+<script>
+// =============================================
+// GAME STATE
+// =============================================
+const G = {
+  money: 100, products: 0, sellPrice: 1, sellPriceLv: 1, sellPriceCost: 50,
+  totalEarned: 0, totalProduced: 0, totalClicks: 0, gameDay: 0,
+  milestones: [], researchDone: [],
+  autoSellActive: false, autoSellInterval: 30, autoSellTimer: 0,
+  passiveIncome: 0, prodMulti: 1, priceMulti: 1, costMulti: 1,
+  weatherPenalty: 1,
+};
+
+const MS = {}; // machine states
+const MACHINES = [
+  {id:'bengkel',name:'🔧 Bengkel Mini',desc:'Boost klik manual',baseCost:20,baseProd:0,iconBg:'rgba(100,70,30,0.4)'},
+  {id:'mesin1',name:'⚙️ Mesin Dasar',desc:'Produksi otomatis',baseCost:50,baseProd:1,iconBg:'rgba(200,80,0,0.25)'},
+  {id:'conveyor',name:'🔄 Ban Berjalan',desc:'Efisiensi tinggi',baseCost:250,baseProd:5,iconBg:'rgba(80,140,200,0.25)'},
+  {id:'robot',name:'🤖 Robot Assembler',desc:'Otomatis 24 jam',baseCost:1500,baseProd:25,iconBg:'rgba(40,180,140,0.25)'},
+  {id:'auto',name:'🏗️ Lini Otomasi',desc:'Sistem terintegrasi',baseCost:8000,baseProd:120,iconBg:'rgba(200,190,40,0.25)'},
+  {id:'mega',name:'🌐 Mega Pabrik',desc:'Skala industri raksasa',baseCost:50000,baseProd:700,iconBg:'rgba(180,40,180,0.25)'},
+  {id:'ai',name:'🧠 AI Factory',desc:'Kecerdasan buatan',baseCost:300000,baseProd:4000,iconBg:'rgba(40,200,240,0.25)'},
+];
+MACHINES.forEach(m => {
+  MS[m.id] = {count:0, upgradeLevel:0, progress:0, upgCost:Math.floor(m.baseCost*3)};
+});
+
+// RESEARCH TREE
+const RESEARCH = [
+  {cat:'⚙️ Produksi', color:'#ff8800', items:[
+    {id:'r_gears1',name:'Roda Gigi Dasar',eff:'+25% produksi semua mesin',cost:300,req:[],effFn:()=>{G.prodMulti*=1.25;}},
+    {id:'r_gears2',name:'Mekanik Lanjut',eff:'+50% produksi semua mesin',cost:1500,req:['r_gears1'],effFn:()=>{G.prodMulti*=1.5;}},
+    {id:'r_nano',name:'Nano-Engineering',eff:'+100% produksi (x2)',cost:8000,req:['r_gears2'],effFn:()=>{G.prodMulti*=2;}},
+    {id:'r_shift',name:'Kerja Shift',eff:'+1 klik power per mesin',cost:500,req:[],effFn:()=>{}},
+    {id:'r_247',name:'Operasi 24/7',eff:'Tidak ada penalti cuaca',cost:2000,req:['r_shift'],effFn:()=>{G.weatherPenalty=1;}},
+  ]},
+  {cat:'💰 Perdagangan', color:'#44ff88', items:[
+    {id:'r_market',name:'Riset Pasar',eff:'+$2 harga jual',cost:400,req:[],effFn:()=>{G.priceMulti+=0.5;}},
+    {id:'r_export',name:'Lisensi Ekspor',eff:'+$5 harga jual',cost:2000,req:['r_market'],effFn:()=>{G.priceMulti+=1;}},
+    {id:'r_global',name:'Perdagangan Global',eff:'+$20 harga jual + Auto-Jual',cost:12000,req:['r_export'],effFn:()=>{G.priceMulti+=4;G.autoSellActive=true;updateAutosellUI();}},
+    {id:'r_bulk',name:'Diskon Massal',eff:'-25% biaya mesin',cost:600,req:[],effFn:()=>{G.costMulti*=0.75;}},
+    {id:'r_scale',name:'Ekonomi Skala',eff:'-40% biaya mesin',cost:3000,req:['r_bulk'],effFn:()=>{G.costMulti*=0.6;}},
+  ]},
+  {cat:'🔬 Teknologi', color:'#7ab8d4', items:[
+    {id:'r_steam',name:'Tenaga Uap',eff:'+30% kecepatan mesin',cost:700,req:[],effFn:()=>{G.prodMulti*=1.3;}},
+    {id:'r_electric',name:'Motor Listrik',eff:'+60% kecepatan mesin',cost:3500,req:['r_steam'],effFn:()=>{G.prodMulti*=1.6;}},
+    {id:'r_ai',name:'Kontrol AI',eff:'+150% kecepatan mesin',cost:20000,req:['r_electric'],effFn:()=>{G.prodMulti*=2.5;}},
+    {id:'r_qc',name:'Kontrol Kualitas',eff:'+30% nilai produk',cost:500,req:[],effFn:()=>{G.priceMulti+=0.3;}},
+    {id:'r_iso',name:'Sertifikasi ISO',eff:'+50% nilai produk',cost:2500,req:['r_qc'],effFn:()=>{G.priceMulti+=0.5;}},
+  ]},
+  {cat:'⚡ Energi', color:'#cc88ff', items:[
+    {id:'r_solar',name:'Panel Surya',eff:'+$5/detik passive income',cost:3000,req:[],effFn:()=>{G.passiveIncome+=5;}},
+    {id:'r_wind',name:'Turbin Angin',eff:'+$20/detik passive income',cost:15000,req:['r_solar'],effFn:()=>{G.passiveIncome+=20;}},
+    {id:'r_fusion',name:'Reaktor Fusi',eff:'+$100/detik + x3 produksi',cost:100000,req:['r_wind'],effFn:()=>{G.passiveIncome+=100;G.prodMulti*=3;}},
+    {id:'r_green',name:'Pabrik Hijau',eff:'Tidak ada penalti cuaca +bonus',cost:5000,req:[],effFn:()=>{G.weatherPenalty=1;}},
+  ]},
+];
+
+const MILESTONES_DEF = [
+  {id:'ms1',emoji:'💰',title:'$500 Pertama!',sub:'Pengusaha muda berbakat!',check:()=>G.totalEarned>=500},
+  {id:'ms2',emoji:'⚙️',title:'5 Mesin Aktif!',sub:'Pabrik mulai bergerak!',check:()=>getTotalM()>=5},
+  {id:'ms3',emoji:'🚀',title:'$5.000 Terkumpul!',sub:'Bisnis mulai serius!',check:()=>G.totalEarned>=5000},
+  {id:'ms4',emoji:'🤖',title:'Robot Pertama!',sub:'Selamat datang di era baru!',check:()=>MS.robot.count>0},
+  {id:'ms5',emoji:'🌧️',title:'Selamat dari Badai!',sub:'Pabrik bertahan saat hujan',check:()=>G.totalEarned>=15000},
+  {id:'ms6',emoji:'📈',title:'$50.000 Konglomerat!',sub:'Nama besar di industri!',check:()=>G.totalEarned>=50000},
+  {id:'ms7',emoji:'🌐',title:'20 Mesin!',sub:'Kawasan industri besar!',check:()=>getTotalM()>=20},
+  {id:'ms8',emoji:'💎',title:'$500K Magnate!',sub:'Legenda industri!',check:()=>G.totalEarned>=500000},
+  {id:'ms9',emoji:'🧠',title:'AI Factory Aktif!',sub:'Masa depan ada di tangan kamu!',check:()=>MS.ai.count>0},
+  {id:'ms10',emoji:'👑',title:'$1 Juta Tycoon!',sub:'Kamu adalah RAJA PABRIK!',check:()=>G.totalEarned>=1000000},
+];
+
+// =============================================
+// AUDIO ENGINE
+// =============================================
+let audioCtx = null, musicOn = false, sfxOn = true;
+let musicNodes = [], rainNode = null;
+
+function initAudio() {
+  if (audioCtx) return;
+  audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+}
+
+function getCtx() { initAudio(); return audioCtx; }
+
+function playNote(freq, startT, dur, vol=0.08, type='sine', detune=0) {
+  const ctx = getCtx();
+  const osc = ctx.createOscillator();
+  const gain = ctx.createGain();
+  const filter = ctx.createBiquadFilter();
+  filter.type = 'lowpass'; filter.frequency.value = 2000;
+  osc.type = type; osc.frequency.value = freq; osc.detune.value = detune;
+  gain.gain.setValueAtTime(0, startT);
+  gain.gain.linearRampToValueAtTime(vol, startT + 0.08);
+  gain.gain.exponentialRampToValueAtTime(0.001, startT + dur);
+  osc.connect(filter); filter.connect(gain); gain.connect(ctx.destination);
+  osc.start(startT); osc.stop(startT + dur + 0.05);
+}
+
+// Ambient background music - calm pentatonic
+const SCALE = [130.81, 146.83, 164.81, 196, 220, 261.63, 293.66, 329.63, 392, 440, 523.25];
+let musicTimeout = null;
+function playAmbient() {
+  if (!musicOn || !audioCtx) return;
+  const ctx = audioCtx;
+  const now = ctx.currentTime;
+  // Pick 2-3 notes from scale
+  const n1 = SCALE[Math.floor(Math.random() * SCALE.length)];
+  const n2 = SCALE[Math.floor(Math.random() * SCALE.length)];
+  const bass = SCALE[Math.floor(Math.random() * 5)];
+  playNote(n1, now, 3.5, 0.06, 'sine');
+  playNote(n2, now+0.2, 4, 0.04, 'sine', 5);
+  playNote(bass * 0.5, now, 5, 0.07, 'triangle');
+  // Subtle pad chord
+  playNote(n1*1.5, now+0.5, 3, 0.025, 'sine');
+  const interval = 1800 + Math.random() * 2200;
+  musicTimeout = setTimeout(playAmbient, interval);
+}
+
+function startMusic() {
+  musicOn = true;
+  document.getElementById('music-btn').textContent = '🎵';
+  document.getElementById('music-btn').classList.add('active');
+  initAudio();
+  if (audioCtx.state === 'suspended') audioCtx.resume();
+  playAmbient();
+}
+function stopMusic() {
+  musicOn = false;
+  document.getElementById('music-btn').textContent = '🎵';
+  document.getElementById('music-btn').classList.remove('active');
+  if (musicTimeout) clearTimeout(musicTimeout);
+}
+function toggleMusic() {
+  if (musicOn) stopMusic(); else startMusic();
+}
+function toggleSfx() {
+  sfxOn = !sfxOn;
+  const btn = document.getElementById('sfx-btn');
+  btn.textContent = sfxOn ? '🔊' : '🔇';
+  sfxOn ? btn.classList.add('active') : btn.classList.remove('active');
+}
+
+// SFX
+function sfxClick() {
+  if (!sfxOn) return; initAudio();
+  const ctx = audioCtx, now = ctx.currentTime;
+  const buf = ctx.createBuffer(1, ctx.sampleRate * 0.05, ctx.sampleRate);
+  const d = buf.getChannelData(0);
+  for (let i=0; i<d.length; i++) d[i] = (Math.random()*2-1) * (1 - i/d.length);
+  const src = ctx.createBufferSource();
+  const g = ctx.createGain(); g.gain.value = 0.15;
+  const f = ctx.createBiquadFilter(); f.type='bandpass'; f.frequency.value=800;
+  src.buffer=buf; src.connect(f); f.connect(g); g.connect(ctx.destination);
+  src.start(now);
+}
+function sfxBuy() {
+  if (!sfxOn) return; initAudio();
+  const ctx = audioCtx, now = ctx.currentTime;
+  [440,554,659].forEach((f,i)=> playNote(f, now+i*0.08, 0.25, 0.1, 'triangle'));
+}
+function sfxUpgrade() {
+  if (!sfxOn) return; initAudio();
+  const ctx = audioCtx, now = ctx.currentTime;
+  [392,523,659,784].forEach((f,i)=> playNote(f, now+i*0.07, 0.3, 0.09, 'sine'));
+}
+function sfxSell() {
+  if (!sfxOn) return; initAudio();
+  const ctx = audioCtx, now = ctx.currentTime;
+  [523,659,784,1047].forEach((f,i)=> playNote(f, now+i*0.06, 0.2, 0.08, 'triangle'));
+}
+function sfxResearch() {
+  if (!sfxOn) return; initAudio();
+  const ctx = audioCtx, now = ctx.currentTime;
+  [329,415,523,659,784,1047].forEach((f,i)=> playNote(f, now+i*0.07, 0.35, 0.07, 'sine'));
+}
+function sfxThunder() {
+  if (!sfxOn) return; initAudio();
+  const ctx = audioCtx, now = ctx.currentTime;
+  const buf = ctx.createBuffer(1, ctx.sampleRate*0.8, ctx.sampleRate);
+  const d = buf.getChannelData(0);
+  for (let i=0; i<d.length; i++) d[i] = (Math.random()*2-1)*(1-i/d.length)*0.8;
+  const src = ctx.createBufferSource();
+  const g = ctx.createGain(); g.gain.value = 0.4;
+  const f = ctx.createBiquadFilter(); f.type='lowpass'; f.frequency.value=200;
+  src.buffer=buf; src.connect(f); f.connect(g); g.connect(ctx.destination);
+  src.start(now);
+}
+function sfxRainStart() {
+  if (!sfxOn || !audioCtx) return;
+  if (rainNode) return;
+  const ctx = audioCtx;
+  const buf = ctx.createBuffer(1, ctx.sampleRate*2, ctx.sampleRate);
+  const d = buf.getChannelData(0);
+  for (let i=0; i<d.length; i++) d[i] = Math.random()*2-1;
+  const src = ctx.createBufferSource();
+  src.buffer = buf; src.loop = true;
+  const g = ctx.createGain(); g.gain.value = 0;
+  const f = ctx.createBiquadFilter(); f.type='bandpass'; f.frequency.value=2000; f.Q.value=0.5;
+  src.connect(f); f.connect(g); g.connect(ctx.destination);
+  src.start();
+  g.gain.linearRampToValueAtTime(0.06, ctx.currentTime+1);
+  rainNode = {src, g};
+}
+function sfxRainStop() {
+  if (!rainNode || !audioCtx) return;
+  rainNode.g.gain.linearRampToValueAtTime(0, audioCtx.currentTime+1.5);
+  setTimeout(()=>{ if(rainNode){rainNode.src.stop();rainNode=null;} }, 2000);
+}
+
+// =============================================
+// DAY/NIGHT + WEATHER SYSTEM
+// =============================================
+let timeOfDay = 0.35; // 0=midnight, 0.25=sunrise, 0.5=noon, 0.75=sunset
+const DAY_SPEED = 1 / 120; // full cycle in 120s
+
+const WEATHERS = ['clear','clear','clear','cloudy','rain','thunder','snow'];
+let weather = 'clear', wxTimer = 0, wxDur = 90, wxTransition = false;
+let lightningTimer = 0, nextLightning = 5;
+
+// Weather particles
+const particles = [];
+
+function getWeatherPenalty() {
+  if (G.weatherPenalty === 1) return 1; // research done
+  if (weather === 'thunder') return 0.7;
+  if (weather === 'snow') return 0.85;
+  if (weather === 'rain') return 0.9;
+  return 1;
+}
+
+// Sky colors [day, sunset, night, sunrise]
+function getSkyColor() {
+  const t = timeOfDay;
+  if (t < 0.2) { // night
+    const p = t/0.2;
+    return lerpColor('#050a18','#0a1530',p);
+  } else if (t < 0.3) { // sunrise
+    const p = (t-0.2)/0.1;
+    return lerpColor('#0a1530','#ff7a30',p);
+  } else if (t < 0.7) { // day
+    const p = (t-0.3)/0.4;
+    if (weather==='rain'||weather==='thunder') return lerpColor('#2a3a4a','#1e2e3e',p);
+    if (weather==='snow') return lerpColor('#b0c8d8','#8aacc0',p);
+    if (weather==='cloudy') return lerpColor('#4a6a7a','#5a7a8a',p);
+    return lerpColor('#1a6aaa','#3a9ad0',p);
+  } else if (t < 0.8) { // sunset
+    const p = (t-0.7)/0.1;
+    return lerpColor('#ff7a30','#cc4420',p);
+  } else { // night
+    const p = (t-0.8)/0.2;
+    return lerpColor('#cc4420','#050a18',p);
+  }
+}
+
+function lerpColor(a,b,t) {
+  const ah=a.slice(1), bh=b.slice(1);
+  const ar=parseInt(ah.slice(0,2),16), ag=parseInt(ah.slice(2,4),16), ab=parseInt(ah.slice(4,6),16);
+  const br=parseInt(bh.slice(0,2),16), bg=parseInt(bh.slice(2,4),16), bb=parseInt(bh.slice(4,6),16);
+  const r=Math.round(ar+(br-ar)*t), g=Math.round(ag+(bg-ag)*t), b_=Math.round(ab+(bb-ab)*t);
+  return `rgb(${r},${g},${b_})`;
+}
+
+function updateSky() {
+  document.getElementById('sky').style.background = getSkyColor();
+  const isNight = timeOfDay < 0.2 || timeOfDay > 0.85;
+  document.getElementById('stars').style.opacity = isNight ? '1' : (timeOfDay < 0.25 ? (0.25-timeOfDay)/0.05 : (timeOfDay > 0.82 ? (timeOfDay-0.82)/0.08 : '0'));
+  updateSunMoon();
+  updateClouds();
+}
+
+function updateSunMoon() {
+  const sm = document.getElementById('sun-moon');
+  const scene = document.getElementById('scene');
+  const W = scene.offsetWidth, H = scene.offsetHeight;
+  const isNight = timeOfDay < 0.2 || timeOfDay > 0.82;
+  
+  // Sun arc: 0.25 (left) to 0.75 (right)
+  let progress, isSun;
+  if (timeOfDay >= 0.2 && timeOfDay <= 0.8) { // day
+    isSun = true;
+    progress = (timeOfDay - 0.2) / 0.6;
+  } else { // night
+    isSun = false;
+    if (timeOfDay > 0.8) progress = (timeOfDay - 0.8) / 0.4;
+    else progress = (timeOfDay + 0.2) / 0.4;
+    progress = Math.min(1, Math.max(0, progress));
+  }
+  
+  const x = progress * (W - 40) + 20;
+  const arcH = Math.sin(progress * Math.PI);
+  const y = H * 0.55 - arcH * H * 0.52;
+  
+  sm.style.left = (x - 16) + 'px';
+  sm.style.top = y + 'px';
+  sm.style.display = 'block';
+  
+  if (isSun) {
+    sm.style.background = 'radial-gradient(circle at 40% 40%,#fff8c0,#ffdd00)';
+    sm.style.boxShadow = '0 0 20px rgba(255,220,0,0.6),0 0 50px rgba(255,200,0,0.2)';
+    sm.style.width = '28px'; sm.style.height = '28px'; sm.style.borderRadius='50%';
+  } else {
+    sm.style.background = 'radial-gradient(circle at 35% 35%,#ffe8a0,#ffcc44)';
+    sm.style.boxShadow = '0 0 15px rgba(255,200,60,0.4)';
+    sm.style.width = '24px'; sm.style.height = '24px'; sm.style.borderRadius='50%';
+  }
+}
+
+function updateClouds() {
+  const isDay = timeOfDay > 0.2 && timeOfDay < 0.8;
+  const cloudOp = weather==='clear'? (isDay?0.7:0.1) :
+                  weather==='cloudy'? 0.9 : weather==='snow'? 0.85 : 0.95;
+  const cloudColor = weather==='snow' ? 'rgba(220,235,245,0.9)' :
+                     weather==='rain'||weather==='thunder' ? 'rgba(80,90,100,0.9)' : 'rgba(240,245,255,0.85)';
+  ['cl1','cl2','cl3','cl4'].forEach(id=>{
+    const el = document.getElementById(id);
+    if (!el) return;
+    el.style.opacity = cloudOp;
+    el.querySelector('.cloud-body').style.background = cloudColor;
+    // shadow for rain clouds
+    el.querySelector('.cloud-body').style.boxShadow =
+      weather==='thunder' ? `0 0 0 8px ${cloudColor},0 0 0 16px rgba(50,55,70,0.4)` :
+                            `0 0 0 10px ${cloudColor},0 0 0 20px rgba(255,255,255,0.2)`;
+  });
+}
+
+function changeWeather(newWx) {
+  if (newWx === weather) return;
+  const oldWx = weather;
+  weather = newWx;
+  
+  // Sound
+  if (oldWx==='rain'||oldWx==='thunder') sfxRainStop();
+  if (newWx==='rain'||newWx==='thunder') sfxRainStart();
+  
+  // Update badge
+  const badges = {clear:'☀️ Cerah',cloudy:'☁️ Mendung',rain:'🌧️ Hujan',thunder:'⛈️ Badai',snow:'❄️ Bersalju'};
+  document.getElementById('wx-badge').textContent = badges[newWx]||'☀️';
+  document.getElementById('s-weather').textContent = badges[newWx]||'☀️';
+  
+  // Particles
+  particles.length = 0;
+  
+  // Trees snow
+  document.querySelectorAll('.tree').forEach(t=>{
+    if (newWx==='snow') t.classList.add('snow-tree');
+    else t.classList.remove('snow-tree');
+  });
+  
+  // Update ground snow
+  const gnd = document.getElementById('ground');
+  if (newWx==='snow') gnd.style.background='linear-gradient(180deg,#c8dce8 0%,#8aacc0 100%)';
+  else gnd.style.background='linear-gradient(180deg,#1e3010 0%,#0f1a08 100%)';
+}
+
+// Canvas weather particles
+function spawnParticle() {
+  const scene = document.getElementById('scene');
+  const W = scene.offsetWidth, H = scene.offsetHeight;
+  if (weather==='rain'||weather==='thunder') {
+    particles.push({
+      x: Math.random()*W*1.5-W*0.25, y: -10,
+      vx: -1.5 + Math.random()*0.5, vy: 12+Math.random()*8,
+      len: 8+Math.random()*12, alpha: 0.4+Math.random()*0.5,
+      type: 'rain'
+    });
+  } else if (weather==='snow') {
+    particles.push({
+      x: Math.random()*W, y: -10,
+      vx: (Math.random()-0.5)*0.8, vy: 0.8+Math.random()*1.5,
+      r: 2+Math.random()*3, alpha: 0.6+Math.random()*0.4,
+      sway: Math.random()*Math.PI*2, swaySpeed: 0.02+Math.random()*0.03,
+      type: 'snow'
+    });
+  }
+}
+
+function drawWeather(dt) {
+  const canvas = document.getElementById('wx-canvas');
+  const scene = document.getElementById('scene');
+  canvas.width = scene.offsetWidth;
+  canvas.height = scene.offsetHeight;
+  const ctx = canvas.getContext('2d');
+  ctx.clearRect(0,0,canvas.width,canvas.height);
+  
+  if (weather!=='rain'&&weather!=='thunder'&&weather!=='snow') return;
+  
+  // Spawn
+  const spawnRate = weather==='snow'?0.3:0.8;
+  if (Math.random()<spawnRate*dt*60) spawnParticle();
+  
+  // Update and draw
+  for (let i=particles.length-1; i>=0; i--) {
+    const p = particles[i];
+    p.x += p.vx*dt*60; p.y += p.vy*dt*60;
+    
+    if (p.type==='snow') {
+      p.sway += p.swaySpeed; p.x += Math.sin(p.sway)*0.3;
+      ctx.beginPath();
+      ctx.arc(p.x, p.y, p.r, 0, Math.PI*2);
+      ctx.fillStyle = `rgba(220,235,255,${p.alpha})`;
+      ctx.fill();
+    } else {
+      ctx.beginPath();
+      ctx.moveTo(p.x, p.y);
+      ctx.lineTo(p.x+p.vx*p.len*0.15, p.y+p.len);
+      ctx.strokeStyle = `rgba(150,180,220,${p.alpha})`;
+      ctx.lineWidth = 1;
+      ctx.stroke();
+    }
+    
+    if (p.y > canvas.height + 20) particles.splice(i,1);
+  }
+}
+
+function triggerLightning() {
+  const lel = document.getElementById('lightning');
+  lel.style.opacity = '1';
+  sfxThunder();
+  setTimeout(()=>{ lel.style.opacity='0'; }, 80);
+  setTimeout(()=>{
+    lel.style.opacity='0.5';
+    setTimeout(()=>{ lel.style.opacity='0'; }, 50);
+  }, 150);
+}
+
+// =============================================
+// TREES
+// =============================================
+function buildTrees() {
+  const treeConfigs = [
+    {trunk:{w:8,h:16}, top:{w:30,h:40}, color:'#2d5a1a', ws:3.5, wd:0},
+    {trunk:{w:6,h:12}, top:{w:22,h:30}, color:'#1e4a12', ws:4.5, wd:-0.5},
+    {trunk:{w:7,h:14}, top:{w:26,h:36}, color:'#3a6a22', ws:3, wd:-1},
+    {trunk:{w:5,h:10}, top:{w:18,h:24}, color:'#264d15', ws:5, wd:-0.2},
+  ];
+  
+  ['trees-left','trees-right'].forEach((gid,gi) => {
+    const grp = document.getElementById(gid);
+    grp.innerHTML = '';
+    const count = 3+Math.min(2, Math.floor(getTotalM()/8));
+    for (let i=0; i<count; i++) {
+      const cfg = treeConfigs[i%treeConfigs.length];
+      const div = document.createElement('div');
+      div.className = 'tree';
+      div.style.cssText = `--ws:${cfg.ws}s;--wd:${(cfg.wd + i*0.3)}s;`;
+      div.innerHTML = `
+        <div class="tree-top" style="width:${cfg.top.w}px;height:${cfg.top.h}px;background:${cfg.color};"></div>
+        <div class="tree-trunk" style="width:${cfg.trunk.w}px;height:${cfg.trunk.h}px;"></div>`;
+      grp.appendChild(div);
+    }
+  });
+}
+
+// =============================================
+// FACTORY VISUAL
+// =============================================
+function updateFactoryVisual() {
+  const total = getTotalM();
+  const rate = getTotalRate();
+
+  // Main building grows
+  const mh = Math.min(140, 90 + Math.floor(total/3)*5);
+  document.getElementById('bld-main').style.height = mh+'px';
+  document.getElementById('fglow').style.width = Math.min(300, 150+total*3)+'px';
+
+  // Side buildings
+  if (total >= 4) {
+    document.getElementById('bld-left').style.display='block';
+    document.getElementById('bld-left').style.height = Math.min(110,65+total*2)+'px';
+  }
+  if (total >= 8) {
+    document.getElementById('bld-right').style.display='block';
+    document.getElementById('bld-right').style.height = Math.min(115,65+total*2)+'px';
+  }
+  if (total >= 15) {
+    document.getElementById('bld-far').style.display='block';
+    document.getElementById('bld-far').style.height = Math.min(90,55+total)+'px';
+  }
+
+  // Stacks
+  if (MS.mesin1.count>0) document.getElementById('st1').classList.add('on');
+  if (MS.conveyor.count>0) document.getElementById('st2').classList.add('on');
+  if (MS.robot.count>0) document.getElementById('st3').classList.add('on');
+
+  // Conveyor
+  if (MS.conveyor.count>0||MS.robot.count>0) {
+    document.getElementById('conveyor').classList.add('on');
+    const speed = Math.max(0.5, 2.5-rate*0.01);
+    const boxCount = Math.min(10, Math.max(1, Math.floor(rate/8)+1));
+    const bp = document.getElementById('conv-boxes');
+    if (bp.children.length!==boxCount) {
+      bp.innerHTML='';
+      for (let i=0;i<boxCount;i++) {
+        const b=document.createElement('div');b.className='cbox';
+        b.style.cssText=`--cd:${speed}s;--cdd:-${(i/boxCount)*speed}s`;
+        bp.appendChild(b);
+      }
+    }
+  }
+
+  // Windows
+  const wins = ['w1','w2','w3','w4','w5','w6','w7','w8','lw1','lw2','lw3','lw4','rw1','rw2','rw3','rw4','fw1','fw2','fw3','fw4'];
+  const isNight = timeOfDay<0.22||timeOfDay>0.82;
+  const litCount = Math.min(wins.length, isNight ? wins.length : Math.floor(total*1.5));
+  wins.forEach((id,i)=>{
+    const el=document.getElementById(id); if(!el)return;
+    if (i<litCount) {
+      if (!el.classList.contains('lit')&&!el.classList.contains('lit2')) {
+        el.classList.add(i%3===0?'lit2':'lit');
+      }
+    } else {
+      el.classList.remove('lit','lit2','blink');
+    }
+  });
+
+  // Sign
+  const sign = document.getElementById('fsign');
+  if (total>=30) sign.textContent='⭐ MEGA FACTORY ⭐';
+  else if (total>=15) sign.textContent='★ PABRIK BESAR ★';
+  else if (total>=5) sign.textContent='— PABRIK AKTIF —';
+  else sign.textContent='FACTORY';
+}
+
+// Occasional window blink
+setInterval(()=>{
+  if (!document.hidden && getTotalM()>0) {
+    const wins=['w1','w2','w3','w4','w5','w6'];
+    const id=wins[Math.floor(Math.random()*wins.length)];
+    const el=document.getElementById(id);
+    if (el&&(el.classList.contains('lit')||el.classList.contains('lit2'))) {
+      el.classList.add('blink');
+      setTimeout(()=>el.classList.remove('blink'),800);
+    }
+  }
+}, 3000);
+
+// =============================================
+// GAME CALCULATIONS
+// =============================================
+function getMachineCost(id) {
+  const m=MACHINES.find(x=>x.id===id);
+  return Math.floor(m.baseCost*Math.pow(1.15,MS[id].count)*G.costMulti);
+}
+function getProduction(id) {
+  const m=MACHINES.find(x=>x.id===id);
+  return m.baseProd * MS[id].count * Math.pow(2,MS[id].upgradeLevel) * G.prodMulti * getWeatherPenalty();
+}
+function getTotalRate() {
+  return MACHINES.filter(m=>m.baseProd>0).reduce((s,m)=>s+getProduction(m.id),0);
+}
+function getTotalM() {
+  return Object.values(MS).reduce((s,m)=>s+m.count,0);
+}
+function getClickPower() {
+  const research_shift = G.researchDone.includes('r_shift');
+  return Math.ceil((1+MS.bengkel.count*2)*Math.pow(2,MS.bengkel.upgradeLevel)*(research_shift?1.5:1));
+}
+function getSellPrice() {
+  return Math.floor(G.sellPrice * G.priceMulti);
+}
+
+// =============================================
+// ACTIONS
+// =============================================
+function handleClick(e) {
+  initAudio();
+  if (audioCtx && audioCtx.state==='suspended') audioCtx.resume();
+  const power = getClickPower();
+  G.products += power;
+  G.totalProduced += power;
+  G.totalClicks++;
+  sfxClick();
+  
+  const scene=document.getElementById('scene');
+  const rect=scene.getBoundingClientRect();
+  
+  // Ripple
+  const rip=document.createElement('div');
+  rip.className='ripple';
+  rip.style.left=(e.clientX-rect.left)+'px';
+  rip.style.top=(e.clientY-rect.top)+'px';
+  scene.appendChild(rip);
+  setTimeout(()=>rip.remove(),650);
+  
+  // Float text
+  const ft=document.createElement('div');
+  ft.className='float-txt';
+  ft.textContent='+'+fmt(power);
+  ft.style.left=(e.clientX-15)+'px';
+  ft.style.top=(e.clientY-20)+'px';
+  document.body.appendChild(ft);
+  setTimeout(()=>ft.remove(),950);
+}
+
+function sellAll() {
+  if (G.products<1) { showToast('Tidak ada produk untuk dijual!'); return; }
+  const earned=Math.floor(G.products*getSellPrice());
+  G.money+=earned; G.totalEarned+=earned;
+  G.products=0;
+  sfxSell();
+  showToast(`+$${fmt(earned)} dari penjualan! 💰`);
+  checkMilestones();
+  updateUI();
+}
+
+function upgradeSellPrice() {
+  if (G.money<G.sellPriceCost) { showToast('Uang tidak cukup!'); return; }
+  G.money-=G.sellPriceCost;
+  G.sellPriceLv++; G.sellPrice=G.sellPriceLv;
+  G.sellPriceCost=Math.floor(G.sellPriceCost*2.5);
+  sfxUpgrade();
+  showToast(`Harga jual naik ke $${getSellPrice()}! 📈`);
+  updateUI();
+}
+
+function buyMachine(id) {
+  const cost=getMachineCost(id);
+  if (G.money<cost) { showToast('Uang tidak cukup!'); return; }
+  G.money-=cost; MS[id].count++;
+  sfxBuy();
+  updateFactoryVisual();
+  buildTrees();
+  checkMilestones();
+  renderMachines();
+  updateUI();
+}
+
+function upgradeMachine(id) {
+  const mst=MS[id];
+  if (mst.count===0) { showToast('Beli mesinnya dulu!'); return; }
+  if (mst.upgradeLevel>=10) { showToast('Level MAX!'); return; }
+  if (G.money<mst.upgCost) { showToast('Uang tidak cukup!'); return; }
+  G.money-=mst.upgCost; mst.upgradeLevel++;
+  mst.upgCost=Math.floor(mst.upgCost*3);
+  sfxUpgrade();
+  showToast(`Mesin diupgrade ke Level ${mst.upgradeLevel}! ⬆ Produksi x2!`);
+  renderMachines();
+  updateUI();
+}
+
+function doResearch(id) {
+  if (G.researchDone.includes(id)) return;
+  const item=RESEARCH.flatMap(c=>c.items).find(r=>r.id===id);
+  if (!item) return;
+  if (!item.req.every(r=>G.researchDone.includes(r))) { showToast('Selesaikan riset prasyarat dulu!'); return; }
+  if (G.money<item.cost) { showToast('Uang tidak cukup!'); return; }
+  G.money-=item.cost;
+  G.researchDone.push(id);
+  item.effFn();
+  sfxResearch();
+  showToast(`🔬 Riset "${item.name}" selesai! ${item.eff}`);
+  renderResearch();
+  updateUI();
+}
+
+function updateAutosellUI() {
+  const card=document.getElementById('autosell-card');
+  if (G.autoSellActive) card.style.display='block';
+}
+
+// =============================================
+// MILESTONES
+// =============================================
+function checkMilestones() {
+  MILESTONES_DEF.forEach(ms=>{
+    if (!G.milestones.includes(ms.id)&&ms.check()) {
+      G.milestones.push(ms.id);
+      showMilestone(ms);
+      updateStatsTab();
+    }
+  });
+}
+
+let milestoneTimeout=null;
+function showMilestone(ms) {
+  document.getElementById('ms-emoji').textContent=ms.emoji;
+  document.getElementById('ms-title').textContent=ms.title;
+  document.getElementById('ms-sub').textContent=ms.sub;
+  const el=document.getElementById('ms-popup');
+  el.classList.add('show');
+  if (milestoneTimeout) clearTimeout(milestoneTimeout);
+  milestoneTimeout=setTimeout(()=>el.classList.remove('show'),4000);
+}
+
+// =============================================
+// STARS
+// =============================================
+function buildStars() {
+  const s=document.getElementById('stars');
+  s.innerHTML='';
+  for (let i=0;i<60;i++) {
+    const star=document.createElement('div');
+    star.className='star';
+    const sz=1+Math.random()*2;
+    star.style.cssText=`width:${sz}px;height:${sz}px;left:${Math.random()*100}%;top:${Math.random()*60}%;--d:${1.5+Math.random()*3}s;animation-delay:${Math.random()*3}s`;
+    s.appendChild(star);
+  }
+}
+
+// =============================================
+// RENDER
+// =============================================
+function fmt(n) {
+  n=Math.floor(n);
+  if(n>=1e12) return (n/1e12).toFixed(2)+'T';
+  if(n>=1e9) return (n/1e9).toFixed(2)+'B';
+  if(n>=1e6) return (n/1e6).toFixed(2)+'M';
+  if(n>=1e3) return (n/1e3).toFixed(1)+'K';
+  return n.toString();
+}
+
+function showTab(id) {
+  document.querySelectorAll('.tab-pane').forEach(p=>p.classList.remove('active'));
+  document.querySelectorAll('.tab').forEach(t=>t.classList.remove('active'));
+  document.getElementById('tab-'+id).classList.add('active');
+  const idx={'sell':0,'machines':1,'research':2,'stats':3}[id]||0;
+  document.querySelectorAll('.tab')[idx].classList.add('active');
+  if (id==='stats') updateStatsTab();
+}
+
+function updateUI() {
+  document.getElementById('money-display').textContent='$'+fmt(G.money);
+  document.getElementById('s-prod').textContent=fmt(G.products);
+  document.getElementById('s-rate').textContent=fmt(getTotalRate())+'/s';
+  document.getElementById('s-total').textContent='$'+fmt(G.totalEarned);
+  
+  document.getElementById('sell-price').textContent=getSellPrice();
+  document.getElementById('sell-stock').textContent=fmt(G.products);
+  document.getElementById('price-lv').textContent=G.sellPriceLv;
+  document.getElementById('price-cost').textContent=fmt(G.sellPriceCost);
+  
+  document.getElementById('click-power-info').textContent=fmt(getClickPower())+'/klik';
+  document.getElementById('prod-bonus-info').textContent='×'+G.prodMulti.toFixed(1);
+  document.getElementById('price-bonus-info').textContent='×'+G.priceMulti.toFixed(1);
+  document.getElementById('passive-info').textContent='$'+fmt(G.passiveIncome)+'/s';
+  
+  const isDay=timeOfDay>0.2&&timeOfDay<0.8;
+  const dayStr=isDay?'SIANG':'MALAM';
+  const wxStr={clear:'CERAH',cloudy:'MENDUNG',rain:'HUJAN',thunder:'BADAI',snow:'BERSALJU'}[weather]||'CERAH';
+  document.getElementById('hdr-day').textContent=`HARI ${Math.floor(G.gameDay+1)} · ${dayStr} ${wxStr}`;
+  
+  document.getElementById('sell-btn').disabled=G.products<1;
+  document.getElementById('price-btn').disabled=G.money<G.sellPriceCost;
+  
+  // Machine buttons
+  MACHINES.forEach(m=>{
+    const cost=getMachineCost(m.id);
+    const mst=MS[m.id];
+    const card=document.getElementById('mcard-'+m.id);
+    if (!card) return;
+    card.classList.toggle('buyable',G.money>=cost);
+    const buyBtn=document.getElementById('mbuy-'+m.id);
+    if (buyBtn) { buyBtn.disabled=G.money<cost; buyBtn.textContent='🛒 $'+fmt(cost); }
+    const upBtn=document.getElementById('mup-'+m.id);
+    if (upBtn) {
+      const canUp=mst.count>0&&mst.upgradeLevel<10&&G.money>=mst.upgCost;
+      upBtn.disabled=!canUp;
+      upBtn.textContent=mst.upgradeLevel>=10?'✓ MAX':'⬆ $'+fmt(mst.upgCost);
+    }
+    const pb=document.getElementById('mpb-'+m.id);
+    if (pb) pb.style.width=(mst.progress*100)+'%';
+  });
+}
+
+function renderMachines() {
+  const c=document.getElementById('machines-container');
+  c.innerHTML='';
+  MACHINES.forEach(m=>{
+    const mst=MS[m.id]; const cost=getMachineCost(m.id);
+    const prod=getProduction(m.id);
+    const canBuy=G.money>=cost;
+    const prodTxt=m.baseProd>0?`${fmt(prod)}/s`:`+${fmt(getClickPower())}/klik`;
+    const stars=Array.from({length:10},(_,i)=>`<div class="mstar ${i<mst.upgradeLevel?'on':''}"></div>`).join('');
+    const card=document.createElement('div');
+    card.className=`mcard ${canBuy?'buyable':''}`;
+    card.id='mcard-'+m.id;
+    card.innerHTML=`
+      <div class="mcard-top">
+        <div class="mcard-ico" style="background:${m.iconBg}">${m.name.split(' ')[0]}</div>
+        <div class="mcard-info">
+          <div class="mcard-name">${m.name}</div>
+          <div class="mcard-desc">${m.desc}</div>
+        </div>
+        <div class="mcard-cnt">${mst.count}</div>
+      </div>
+      <div class="mcard-stars">${stars}</div>
+      <div class="mcard-stats">
+        <div class="mcs"><div class="mcs-l">Produksi</div>
+          <div class="mcs-v" style="color:${m.baseProd>0?'#ffaa00':'#44ff88'}">${prodTxt}</div></div>
+        <div class="mcs"><div class="mcs-l">Upgrade</div><div class="mcs-v">Lv.${mst.upgradeLevel}</div></div>
+        <div class="mcs"><div class="mcs-l">Harga</div>
+          <div class="mcs-v" style="color:${canBuy?'#ffaa00':'#333'}">$${fmt(cost)}</div></div>
+      </div>
+      ${m.baseProd>0?`<div class="mcard-prog"><div class="mcard-prog-fill" id="mpb-${m.id}" style="width:0%"></div></div>`:''}
+      <div class="mcard-acts">
+        <button class="mbtn buy" id="mbuy-${m.id}" onclick="buyMachine('${m.id}')" ${!canBuy?'disabled':''}>🛒 $${fmt(cost)}</button>
+        <button class="mbtn up" id="mup-${m.id}" onclick="upgradeMachine('${m.id}')" ${mst.count===0||mst.upgradeLevel>=10||G.money<mst.upgCost?'disabled':''}>
+          ${mst.upgradeLevel>=10?'✓ MAX':'⬆ $'+fmt(mst.upgCost)}</button>
+      </div>`;
+    c.appendChild(card);
+  });
+}
+
+function renderResearch() {
+  const c=document.getElementById('research-container');
+  c.innerHTML='';
+  RESEARCH.forEach(cat=>{
+    const catDiv=document.createElement('div');
+    catDiv.className='rcat';
+    catDiv.innerHTML=`<div class="rcat-hdr"><span class="rcat-icon">${cat.cat.split(' ')[0]}</span>
+      <span class="rcat-title" style="color:${cat.color}">${cat.cat}</span></div>`;
+    cat.items.forEach(item=>{
+      const done=G.researchDone.includes(item.id);
+      const canReq=item.req.every(r=>G.researchDone.includes(r));
+      const canBuy=canReq&&!done&&G.money>=item.cost;
+      const locked=!canReq&&!done;
+      const card=document.createElement('div');
+      card.className=`rcard ${done?'done':''} ${canReq&&!done?'available':''} ${locked?'locked':''}`;
+      card.innerHTML=`
+        <div class="rcard-info">
+          <div class="rcard-name">${item.name}</div>
+          <div class="rcard-eff">${item.eff}</div>
+          ${locked?`<div class="rcard-req">🔒 Butuh: ${item.req.map(r=>{const i2=RESEARCH.flatMap(c=>c.items).find(x=>x.id===r);return i2?i2.name:r;}).join(', ')}</div>`:''}
+        </div>
+        ${done?'<div class="rcard-cost" style="color:var(--green)">✓ SELESAI</div>':
+          `<div style="text-align:right">
+            <div class="rcard-cost">$${fmt(item.cost)}</div>
+            <button class="rbtn ${locked?'locked':''}" style="margin-top:4px;${locked?'':'cursor:pointer'}"
+              onclick="${locked?'':'doResearch(\''+item.id+'\')'}" ${locked?'disabled':''}>
+              ${locked?'🔒':canBuy?'RISET':'⏳'}
+            </button>
+          </div>`}`;
+      catDiv.appendChild(card);
+    });
+    c.appendChild(catDiv);
+  });
+}
+
+function updateStatsTab() {
+  document.getElementById('st-earned').textContent='$'+fmt(G.totalEarned);
+  document.getElementById('st-produced').textContent=fmt(G.totalProduced);
+  document.getElementById('st-machines').textContent=getTotalM();
+  document.getElementById('st-research').textContent=G.researchDone.length;
+  document.getElementById('st-clicks').textContent=fmt(G.totalClicks);
+  document.getElementById('st-days').textContent=Math.floor(G.gameDay);
+  
+  const ml=document.getElementById('milestone-list');
+  if (G.milestones.length===0) { ml.textContent='Belum ada milestone. Terus bermain!'; return; }
+  ml.innerHTML=MILESTONES_DEF.filter(m=>G.milestones.includes(m.id))
+    .map(m=>`<div style="color:var(--text)">${m.emoji} ${m.title}</div>`).join('');
+}
+
+function showToast(msg) {
+  const t=document.getElementById('toast');
+  t.textContent=msg;t.classList.add('show');
+  clearTimeout(t._timer);
+  t._timer=setTimeout(()=>t.classList.remove('show'),2500);
+}
+
+// =============================================
+// MAIN GAME LOOP
+// =============================================
+let lastTime=Date.now(), factoryUpdateT=0, weatherClock=0, dayCount=0;
+
+function gameLoop() {
+  const now=Date.now();
+  const dt=Math.min((now-lastTime)/1000, 0.1);
+  lastTime=now;
+
+  // Time of day
+  timeOfDay=(timeOfDay+DAY_SPEED*dt)%1;
+  if (timeOfDay<0.01&&dt>0) { G.gameDay++; dayCount++; }
+  
+  // Auto produce
+  MACHINES.filter(m=>m.baseProd>0).forEach(m=>{
+    const mst=MS[m.id]; if(!mst.count) return;
+    const rate=getProduction(m.id);
+    mst.progress+=dt;
+    if (mst.progress>=1) {
+      const prod=rate*Math.floor(mst.progress);
+      G.products+=prod; G.totalProduced+=prod;
+      mst.progress%=1;
+    }
+  });
+  
+  // Passive income
+  if (G.passiveIncome>0) {
+    G.money+=G.passiveIncome*dt;
+    G.totalEarned+=G.passiveIncome*dt;
+  }
+  
+  // Auto-sell
+  if (G.autoSellActive) {
+    G.autoSellTimer+=dt;
+    if (G.autoSellTimer>=G.autoSellInterval&&G.products>=1) {
+      const earned=Math.floor(G.products*getSellPrice());
+      G.money+=earned; G.totalEarned+=earned;
+      G.products=0; G.autoSellTimer=0;
+      checkMilestones();
+    }
+  }
+  
+  // Weather timer
+  wxTimer+=dt;
+  if (wxTimer>=wxDur) {
+    wxTimer=0; wxDur=60+Math.random()*90;
+    const wx=WEATHERS[Math.floor(Math.random()*WEATHERS.length)];
+    changeWeather(wx);
+  }
+  
+  // Lightning
+  if (weather==='thunder') {
+    lightningTimer+=dt;
+    if (lightningTimer>=nextLightning) {
+      lightningTimer=0; nextLightning=3+Math.random()*8;
+      triggerLightning();
+    }
+  }
+  
+  // Draw weather
+  drawWeather(dt);
+  
+  // Sky update (every frame for smooth)
+  updateSky();
+  
+  // Factory visual (slower)
+  factoryUpdateT+=dt;
+  if (factoryUpdateT>=2) { updateFactoryVisual(); factoryUpdateT=0; }
+  
+  // Milestone check (periodic)
+  if (Math.floor(now/5000)!==Math.floor((now-dt*1000)/5000)) checkMilestones();
+  
+  // UI update
+  updateUI();
+  
+  requestAnimationFrame(gameLoop);
+}
+
+// =============================================
+// INIT
+// =============================================
+buildStars();
+buildTrees();
+renderMachines();
+renderResearch();
+updateUI();
+updateFactoryVisual();
+updateSky();
+
+// Start music after user interaction
+document.getElementById('scene').addEventListener('click', ()=>{
+  if (!musicOn && !audioCtx) {
+    // auto-start music on first touch
+    startMusic();
+  }
+}, {once:true});
+
+gameLoop();
+</script>
+
+  <!-- ===== SERVICE WORKER REGISTRATION ===== -->
+  <script>
+    if ('serviceWorker' in navigator) {
+      window.addEventListener('load', async () => {
+        try {
+          const reg = await navigator.serviceWorker.register('/sw.js', { scope: '/' });
+          console.log('[App] Service Worker registered:', reg.scope);
+
+          // Check for updates
+          reg.addEventListener('updatefound', () => {
+            const newWorker = reg.installing;
+            newWorker.addEventListener('statechange', () => {
+              if (newWorker.state === 'installed' && navigator.serviceWorker.controller) {
+                console.log('[App] New version available!');
+              }
+            });
+          });
+        } catch (err) {
+          console.log('[App] SW registration failed:', err);
+        }
+      });
+    }
+
+    // PWA Install Prompt
+    let deferredPrompt;
+    window.addEventListener('beforeinstallprompt', (e) => {
+      e.preventDefault();
+      deferredPrompt = e;
+      // Show install button after 30 seconds
+      setTimeout(() => {
+        if (deferredPrompt) showInstallPrompt();
+      }, 30000);
+    });
+
+    function showInstallPrompt() {
+      const toast = document.getElementById('toast');
+      if (!toast) return;
+      toast.textContent = '📲 Install game ini ke HP kamu? Tap untuk install!';
+      toast.classList.add('show');
+      toast.style.cursor = 'pointer';
+      toast.onclick = async () => {
+        toast.classList.remove('show');
+        if (deferredPrompt) {
+          deferredPrompt.prompt();
+          const { outcome } = await deferredPrompt.userChoice;
+          console.log('[App] Install outcome:', outcome);
+          deferredPrompt = null;
+        }
+      };
+    }
+
+    window.addEventListener('appinstalled', () => {
+      console.log('[App] PWA installed successfully!');
+      deferredPrompt = null;
+    });
+  </script>
+
+</body>
+</html>
